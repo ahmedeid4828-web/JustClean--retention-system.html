@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JustClean Call Management System - Utilization & Occupation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%); 
+            padding: 20px; 
+            line-height: 1.6; 
+            color: #333;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            padding: 20px; 
+            background: white; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(142, 68, 173, 0.1); 
+        }
+        .header h1 { 
+            color: #8E44AD; 
+            font-weight: 700; 
+            font-size: 2.5em; 
+            margin-bottom: 5px; 
+        }
+        .header p { 
+            color: #7F8C8D; 
+            font-weight: 300; 
+            font-size: 1.1em; 
+        }
+        .form-section, .table-section, .results-section { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 25px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 6px 20px rgba(142, 68, 173, 0.08); 
+            border: 1px solid #f1f2f6;
+        }
+        .section-title { 
+            color: #8E44AD; 
+            font-weight: 500; 
+            font-size: 1.5em; 
+            margin-bottom: 20px; 
+            border-bottom: 2px solid #8E44AD; 
+            padding-bottom: 10px; 
+        }
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 25px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 500; 
+            color: #5D6D7E; 
+            font-size: 0.95em;
+        }
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #ecf0f1; 
+            border-radius: 8px; 
+            font-size: 1em; 
+            transition: border-color 0.3s ease;
+        }
+        input:focus, select:focus { 
+            outline: none; 
+            border-color: #8E44AD; 
+            box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1);
+        }
+        button { 
+            background: linear-gradient(135deg, #8E44AD 0%, #9B59B6 100%); 
+            color: white; 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 1em; 
+            font-weight: 500; 
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        button:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(142, 68, 173, 0.3); 
+        }
+        button.danger { 
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%); 
+        }
+        button.danger:hover { 
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3); 
+        }
+        .add-row { 
+            display: flex; 
+            gap: 15px; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            flex-wrap: wrap;
+        }
+        .add-row input { width: auto; min-width: 180px; }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px; 
+            background: white; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        th, td { 
+            padding: 15px; 
+            text-align: center; 
+            border-bottom: 1px solid #ecf0f1; 
+        }
+        th { 
+            background: linear-gradient(135deg, #8E44AD 0%, #9B59B6 100%); 
+            color: white; 
+            font-weight: 500; 
+        }
+        tr:nth-child(even) { background: #f8f9fa; }
+        tr:hover { background: rgba(142, 68, 173, 0.05); }
+        .results-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; 
+            margin-top: 25px; 
+        }
+        .result-card { 
+            background: linear-gradient(135deg, #8E44AD 0%, #9B59B6 100%); 
+            color: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            text-align: center; 
+            box-shadow: 0 6px 20px rgba(142, 68, 173, 0.2);
+        }
+        .result-card h3 { 
+            margin-bottom: 15px; 
+            font-weight: 400; 
+            opacity: 0.9;
+        }
+        .result-value { 
+            font-size: 2.5em; 
+            font-weight: 700; 
+            margin-bottom: 10px;
+        }
+        .result-card.good { 
+            background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%); 
+        }
+        .result-card.medium { 
+            background: linear-gradient(135deg, #F39C12 0%, #F1C40F 100%); 
+        }
+        .result-card.bad { 
+            background: linear-gradient(135deg, #E74C3C 0%, #EC7063 100%); 
+        }
+        .warning { 
+            color: #F39C12; 
+            font-weight: 500; 
+            background: rgba(243, 156, 18, 0.1); 
+            padding: 10px; 
+            border-radius: 6px; 
+            margin: 15px 0;
+        }
+        .retention-section { 
+            background: linear-gradient(135deg, #BB8FCE 0%, #8E44AD 100%); 
+            color: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            margin-top: 20px; 
+            text-align: center;
+        }
+        .retention-section .section-title { 
+            color: white; 
+            border-bottom-color: rgba(255,255,255,0.3); 
+        }
+        .retention-section h3 { 
+            margin-bottom: 10px; 
+            font-weight: 500;
+        }
+        @media (max-width: 768px) { 
+            .form-grid, .add-row { grid-template-columns: 1fr; flex-direction: column; }
+            .header h1 { font-size: 2em; }
+            .result-value { font-size: 2em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>JustClean</h1>
+            <p>Call Management System - Utilization & Occupation Tracker</p>
+        </div>
+        
+        <!-- Employee and Shift Data Section -->
+        <div class="form-section">
+            <h2 class="section-title">1. Employee and Shift Details</h2>
+            <form id="employeeForm">
+                <div class="form-grid">
+                    <div>
+                        <label for="employeeName">Employee Name:</label>
+                        <select id="employeeName" required>
+                            <option value="">Select Employee</option>
+                            <option value="Shaimaa">Shaimaa</option>
+                            <option value="Areej">Areej</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="workDate">Work Date:</label>
+                        <input type="date" id="workDate" required>
+                    </div>
+                    <div>
+                        <label for="shiftHours">Daily Shift Hours (hours):</label>
+                        <input type="number" id="shiftHours" min="0" step="0.5" required>
+                    </div>
+                    <div>
+                        <label for="breakHours">Break Time (hours):</label>
+                        <input type="number" id="breakHours" min="0" step="0.5" value="1" required>
+                    </div>
+                </div>
+                <button type="button" onclick="startSheet()">Start Call Sheet</button>
+            </form>
+        </div>
+
+        <!-- Call Sheet Section -->
+        <div class="table-section" id="callSheet" style="display: none;">
+            <h2 class="section-title">2. Call Sheet (Add Each Call)</h2>
+            <div class="add-row">
+                <input type="text" id="phoneNumber" placeholder="Phone Number">
+                <input type="time" id="startTime">
+                <input type="time" id="endTime">
+                <button type="button" onclick="addCallRow()">Add Call</button>
+            </div>
+            <table id="callsTable">
+                <thead>
+                    <tr>
+                        <th>Phone Number</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Duration (Minutes)</th>
+                        <th>Duration (Hours)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="callsBody"></tbody>
+            </table>
+            <button type="button" onclick="calculateResults()" style="margin-top: 15px;">Calculate Results</button>
+            <button type="button" onclick="clearSheet()" class="danger" style="margin-right: 10px;">Clear Sheet</button>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="results" style="display: none;">
+            <h2 class="section-title">3. Automated Results</h2>
+            <div id="resultsContent"></div>
+            
+            <!-- Retention Department Section -->
+            <div class="retention-section">
+                <h2 class="section-title">Retention Department</h2>
+                <h3>Employee Retention Overview</h3>
+                <p>Tracked Employees: Shaimaa & Areej</p>
+                <p>Total Shifts Logged: <span id="totalShifts">0</span> | Retention Rate: <span id="retentionRate">100%</span></p>
+                <p>(This section tracks consistent logging for retention analysis)</p>
+            </div>
+            
+            <button type="button" onclick="exportData()" style="margin-top: 15px;">Export Results (JSON)</button>
+        </div>
+    </div>
+
+    <script>
+        let calls = []; // Array for calls
+        let employeeData = {}; // Employee data
+        let totalShiftsLogged = parseInt(localStorage.getItem('totalShifts') || '0'); // For retention tracking
+
+        // Load saved data on page load
+        window.onload = function() {
+            console.log('Page loaded successfully.'); // Diagnostic
+            const savedCalls = localStorage.getItem('calls');
+            const savedEmployee = localStorage.getItem('employeeData');
+            if (savedCalls) {
+                calls = JSON.parse(savedCalls);
+                renderTable();
+            }
+            if (savedEmployee) {
+                employeeData = JSON.parse(savedEmployee);
+                document.getElementById('callSheet').style.display = 'block';
+                // Auto-fill form if employee data exists
+                document.getElementById('employeeName').value = employeeData.name || '';
+                document.getElementById('workDate').value = employeeData.date || '';
+                document.getElementById('shiftHours').value = employeeData.shiftHours || '';
+                document.getElementById('breakHours').value = employeeData.breakHours || '';
+            }
+            updateRetentionDisplay();
+        };
+
+        function startSheet() {
+            console.log('Start Sheet button clicked!'); // Diagnostic
+            const name = document.getElementById('employeeName').value;
+            const date = document.getElementById('workDate').value;
+            const shiftHours = parseFloat(document.getElementById('shiftHours').value);
+            const breakHours = parseFloat(document.getElementById('breakHours').value);
+
+            console.log('Input values:', { name, date, shiftHours, breakHours }); // Diagnostic
+
+            if (!name || !date || shiftHours <= 0) {
+                alert('Please fill in all required fields!');
+                console.log('Validation failed - missing fields.'); // Diagnostic
+                return;
+            }
+
+            employeeData = { name, date, shiftHours, breakHours };
+            document.getElementById('callSheet').style.display = 'block';
+            localStorage.setItem('employeeData', JSON.stringify(employeeData));
+            
+            // Update retention tracking
+            totalShiftsLogged++;
+            localStorage.setItem('totalShifts', totalShiftsLogged.toString());
+            updateRetentionDisplay();
+            
+            alert('Sheet started successfully! Add calls now.');
+            console.log('Sheet started - Call sheet visible.'); // Diagnostic
+        }
+
+        function addCallRow() {
+            const phone = document.getElementById('phoneNumber').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+
+            if (!phone || !startTime || !endTime) {
+                alert('Please fill in all call fields!');
+                return;
+            }
+
+            // Calculate duration
+            const start = new Date(`2000-01-01T${startTime}:00`);
+            const end = new Date(`2000-01-01T${endTime}:00`);
+            const durationMs = end - start;
+            if (durationMs <= 0) {
+                alert('End time must be after start time!');
+                return;
+            }
+            const durationMinutes = durationMs / (1000 * 60);
+            const durationHours = durationMinutes / 60;
+
+            calls.push({ phone, startTime, endTime, durationMinutes, durationHours });
+            renderTable();
+            clearInputs();
+            localStorage.setItem('calls', JSON.stringify(calls));
+            console.log('Call added:', calls[calls.length - 1]); // Diagnostic
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('callsBody');
+            tbody.innerHTML = '';
+            calls.forEach((call, index) => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${call.phone}</td>
+                    <td>${call.startTime}</td>
+                    <td>${call.endTime}</td>
+                    <td>${call.durationMinutes.toFixed(1)}</td>
+                    <td>${call.durationHours.toFixed(2)}</td>
+                    <td><button class="danger" onclick="deleteRow(${index})" style="padding: 6px 12px; font-size: 0.9em;">Delete</button></td>
+                `;
+            });
+        }
+
+        function deleteRow(index) {
+            calls.splice(index, 1);
+            renderTable();
+            localStorage.setItem('calls', JSON.stringify(calls));
+            console.log('Row deleted. Remaining calls:', calls.length); // Diagnostic
+        }
+
+        function clearInputs() {
+            document.getElementById('phoneNumber').value = '';
+            document.getElementById('startTime').value = '';
+            document.getElementById('endTime').value = '';
+        }
+
+        function clearSheet() {
+            if (confirm('Are you sure you want to clear the entire sheet?')) {
+                calls = [];
+                renderTable();
+                localStorage.removeItem('calls');
+                console.log('Sheet cleared.'); // Diagnostic
+            }
+        }
+
+        function updateRetentionDisplay() {
+            document.getElementById('totalShifts').textContent
